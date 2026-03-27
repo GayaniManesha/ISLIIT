@@ -95,8 +95,8 @@ export async function createStudyMaterial(req, res, next) {
       title: value.title,
       category: value.category,
       fileName: value.fileName,
-      hasFileContent: !!value.fileContent,
-      fileContentSize: value.fileContent ? value.fileContent.length : 0,
+      hasFileData: !!value.fileData,
+      fileDataSize: value.fileData ? value.fileData.length : 0,
     });
 
     const material = {
@@ -105,7 +105,7 @@ export async function createStudyMaterial(req, res, next) {
       category: value.category,
       fileName: value.fileName,
       uploadedBy: value.uploadedBy,
-      fileContent: value.fileContent,
+      fileData: value.fileData,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -115,8 +115,8 @@ export async function createStudyMaterial(req, res, next) {
     
     console.log("[Study Materials] Material created successfully:", result.insertedId);
     
-    // Return material without fileContent in response (it's large)
-    const { fileContent, ...materialWithoutContent } = material;
+    // Return material without fileData in response (it's large)
+    const { fileData, ...materialWithoutContent } = material;
     res.status(201).json({ _id: result.insertedId, ...materialWithoutContent });
   } catch (error) {
     console.error("[Study Materials] Create error:", error);
@@ -149,18 +149,18 @@ export async function downloadStudyMaterial(req, res, next) {
     console.log("[Study Materials] Found material:", {
       title: material.title,
       fileName: material.fileName,
-      hasFileContent: !!material.fileContent,
-      fileContentSize: material.fileContent ? material.fileContent.length : 0,
+      hasFileData: !!material.fileData,
+      fileDataSize: material.fileData ? material.fileData.length : 0,
     });
 
-    if (!material.fileContent) {
-      console.error("[Study Materials] No file content for material:", materialId);
+    if (!material.fileData) {
+      console.error("[Study Materials] No file data for material:", materialId);
       res.status(404).json({ error: "File not found" });
       return;
     }
 
-    // fileContent is base64 encoded
-    const buffer = Buffer.from(material.fileContent, "base64");
+    // fileData is base64 encoded
+    const buffer = Buffer.from(material.fileData, "base64");
     res.setHeader("Content-Type", "application/octet-stream");
     res.setHeader("Content-Disposition", `attachment; filename="${material.fileName}"`);
     res.send(buffer);

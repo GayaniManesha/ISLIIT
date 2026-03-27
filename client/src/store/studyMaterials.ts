@@ -56,7 +56,7 @@ export function useStudyMaterialsStore() {
   };
 
   const uploadMaterial = async (
-    payload: Omit<MongoStudyMaterial, "_id" | "createdAt" | "updatedAt"> & { fileContent?: string }
+    payload: Omit<MongoStudyMaterial, "_id" | "createdAt" | "updatedAt"> & { fileData?: string }
   ): Promise<boolean> => {
     error.value = null;
 
@@ -77,6 +77,7 @@ export function useStudyMaterialsStore() {
       return true;
     } catch (err) {
       error.value = err instanceof Error ? err.message : "Unknown error";
+      console.error("[Store] Upload error:", error.value);
       return false;
     }
   };

@@ -192,7 +192,14 @@ const handleSubmit = async () => {
     // Read file as base64
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const fileContent = (e.target?.result as string)?.split(",")[1]; // Remove data URL prefix
+      const base64String = e.target?.result as string;
+      const fileData = base64String.includes(",") ? base64String.split(",")[1] : base64String;
+
+      console.log("[Upload] File data prepared:", {
+        fileName: selectedFile.value!.name,
+        fileDataSize: fileData.length,
+        hasFileData: !!fileData,
+      });
 
       const payload = {
         title: form.value.title,
@@ -200,7 +207,7 @@ const handleSubmit = async () => {
         category: form.value.category,
         fileName: selectedFile.value!.name,
         uploadedBy: authUser.authUser.value?.username || authUser.authUser.value?.student_id || "unknown",
-        fileContent: fileContent,
+        fileData: fileData,
       };
 
       const result = await uploadMaterial(payload);
@@ -218,8 +225,16 @@ const handleSubmit = async () => {
 
       isSubmitting.value = false;
     };
+
+    reader.onerror = () => {
+      console.error("[Upload] FileReader error");
+      errorMessage.value = "Error reading file";
+      isSubmitting.value = false;
+    };
+
     reader.readAsDataURL(selectedFile.value);
   } catch (error) {
+    console.error("[Upload] Error:", error);
     errorMessage.value = "Error reading file";
     isSubmitting.value = false;
   }

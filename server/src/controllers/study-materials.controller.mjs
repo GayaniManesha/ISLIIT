@@ -86,20 +86,86 @@ export async function createStudyMaterial(req, res, next) {
   try {
     const { valid, errors, value } = validateStudyMaterialPayload(req.body);
     if (!valid) {
+      console.error("[Study Materials] Validation failed:", errors);
       res.status(400).json({ error: "Validation failed", details: errors });
       return;
     }
 
+    console.log("[Study Materials] Creating material:", {
+      title: value.title,
+      category: value.category,
+      fileName: value.fileName,
+      hasFileContent: !!value.fileContent,
+      fileContentSize: value.fileContent ? value.fileContent.length : 0,
+    });
+
     const material = {
-      ...value,
+      title: value.title,
+      description: value.description,
+      category: value.category,
+      fileName: value.fileName,
+      uploadedBy: value.uploadedBy,
+      fileContent: value.fileContent,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
     const db = await getDb();
     const result = await db.collection("study_materials").insertOne(material);
-    res.status(201).json({ _id: result.insertedId, ...material });
+    
+    console.log("[Study Materials] Material created successfully:", result.insertedId);
+    
+    // Return material without fileContent in response (it's large)
+    const { fileContent, ...materialWithoutContent } = material;
+    res.status(201).json({ _id: result.insertedId, ...materialWithoutContent });
   } catch (error) {
+    console.error("[Study Materials] Create error:", error);
+    next(error);
+  }
+}
+
+export async function downloadStudyMaterial(req, res, next) {
+  try {
+    const materialId = toObjectId(req.params.id);
+    if (!materialId) {
+      console.error("[Study Materials] Invalid material ID:", req.params.id);
+      res.status(400).json({ error: "Invalid material id" });
+      return;
+    }
+
+    const db = await getDb();
+    const material = await db
+      .collection("study_materials")
+      .findOne({ _id: materialId });
+
+    console.log("[Study Materials] Download request for:", materialId);
+
+    if (!material) {
+      console.error("[Study Materials] Material not found:", materialId);
+      res.status(404).json({ error: "Study material not found" });
+      return;
+    }
+
+    console.log("[Study Materials] Found material:", {
+      title: material.title,
+      fileName: material.fileName,
+      hasFileContent: !!material.fileContent,
+      fileContentSize: material.fileContent ? material.fileContent.length : 0,
+    });
+
+    if (!material.fileContent) {
+      console.error("[Study Materials] No file content for material:", materialId);
+      res.status(404).json({ error: "File not found" });
+      return;
+    }
+
+    // fileContent is base64 encoded
+    const buffer = Buffer.from(material.fileContent, "base64");
+    res.setHeader("Content-Type", "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename="${material.fileName}"`);
+    res.send(buffer);
+  } catch (error) {
+    console.error("[Study Materials] Download error:", error);
     next(error);
   }
 }

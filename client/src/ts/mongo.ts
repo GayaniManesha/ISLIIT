@@ -74,7 +74,6 @@ export type MongoStudyMaterial = {
   title: string;
   description: string;
   category: "Notes" | "Short Notes" | "Past Papers" | "Model Papers" | "Quizzes";
-  fileUrl: string;
   fileName: string;
   uploadedBy: string;
   createdAt?: string;

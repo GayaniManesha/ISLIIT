@@ -56,7 +56,7 @@ export function useStudyMaterialsStore() {
   };
 
   const uploadMaterial = async (
-    payload: Omit<MongoStudyMaterial, "_id" | "createdAt" | "updatedAt">
+    payload: Omit<MongoStudyMaterial, "_id" | "createdAt" | "updatedAt"> & { fileContent?: string }
   ): Promise<boolean> => {
     error.value = null;
 

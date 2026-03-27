@@ -51,7 +51,7 @@
           </div>
           <div class="flex gap-2">
             <a
-              :href="material.fileUrl"
+              :href="`${apiUrl}/api/study-materials/download/${material._id}`"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium transition-colors"
@@ -77,6 +77,7 @@ import { useStudyMaterialsStore } from "@/store/studyMaterials";
 const route = useRoute();
 const store = useStudyMaterialsStore();
 const { materials, loading, fetchMaterialsByCategory } = store;
+const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 
 const categorySlug = route.params.category as string;
 

@@ -93,8 +93,9 @@
           <div class="flex gap-3">
             <button
               type="submit"
-              :disabled="isSubmitting"
-              class="flex-1 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-medium transition-colors"
+              :disabled="isSubmitting || !authUser.authUser.value"
+              :title="!authUser.authUser.value ? 'Please log in to upload' : ''"
+              class="flex-1 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium transition-colors"
             >
               {{ isSubmitting ? "Uploading..." : "Upload Material" }}
             </button>
@@ -129,7 +130,6 @@ const form = ref({
   title: "",
   description: "",
   category: "",
-  fileUrl: "",
   fileName: "",
   uploadedBy: "",
 });
@@ -161,8 +161,13 @@ const handleSubmit = async () => {
   errorMessage.value = "";
   successMessage.value = "";
 
-  if (!selectedFile.value || !authUser.user) {
-    errorMessage.value = "Please select a file and ensure you are logged in";
+  if (!form.value.title.trim()) {
+    errorMessage.value = "Please enter a title";
+    return;
+  }
+
+  if (!form.value.description.trim()) {
+    errorMessage.value = "Please enter a description";
     return;
   }
 
@@ -171,31 +176,53 @@ const handleSubmit = async () => {
     return;
   }
 
-  isSubmitting.value = true;
-
-  const payload = {
-    title: form.value.title,
-    description: form.value.description,
-    category: form.value.category,
-    fileUrl: `uploads/${Date.now()}-${selectedFile.value.name}`,
-    fileName: selectedFile.value.name,
-    uploadedBy: authUser.user._id,
-  };
-
-  const result = await uploadMaterial(payload);
-
-  if (result) {
-    successMessage.value = "Material uploaded successfully!";
-    form.value = { title: "", description: "", category: "", fileUrl: "", fileName: "", uploadedBy: "" };
-    selectedFile.value = null;
-    setTimeout(() => {
-      router.push("/kuppi-sessions/study-materials");
-    }, 1500);
-  } else {
-    errorMessage.value = store.error || "Failed to upload material";
+  if (!selectedFile.value) {
+    errorMessage.value = "Please select a file to upload";
+    return;
   }
 
-  isSubmitting.value = false;
+  if (!authUser.authUser.value) {
+    errorMessage.value = "You must be logged in to upload materials. Please log in first.";
+    return;
+  }
+
+  isSubmitting.value = true;
+
+  try {
+    // Read file as base64
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const fileContent = (e.target?.result as string)?.split(",")[1]; // Remove data URL prefix
+
+      const payload = {
+        title: form.value.title,
+        description: form.value.description,
+        category: form.value.category,
+        fileName: selectedFile.value!.name,
+        uploadedBy: authUser.authUser.value?.username || authUser.authUser.value?.student_id || "unknown",
+        fileContent: fileContent,
+      };
+
+      const result = await uploadMaterial(payload);
+
+      if (result) {
+        successMessage.value = "Material uploaded successfully!";
+        form.value = { title: "", description: "", category: "", fileName: "", uploadedBy: "" };
+        selectedFile.value = null;
+        setTimeout(() => {
+          router.push("/kuppi-sessions/study-materials");
+        }, 1500);
+      } else {
+        errorMessage.value = store.error || "Failed to upload material";
+      }
+
+      isSubmitting.value = false;
+    };
+    reader.readAsDataURL(selectedFile.value);
+  } catch (error) {
+    errorMessage.value = "Error reading file";
+    isSubmitting.value = false;
+  }
 };
 
 onMounted(async () => {
@@ -204,6 +231,11 @@ onMounted(async () => {
   if (categoryParam) {
     form.value.category = decodeURIComponent(categoryParam);
     selectedCategory.value = form.value.category;
+  }
+
+  // Check if user is logged in
+  if (!authUser.authUser.value) {
+    errorMessage.value = "You must be logged in to upload materials. Please log in first.";
   }
 });
 </script>

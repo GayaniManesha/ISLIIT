@@ -133,6 +133,25 @@ const router = createRouter({
       component: () => import('../views/KuppiSessions/KuppiSessionDetail.vue'),
       meta: { title: 'Kuppi Session Details' },
     },
+    // Sub-Feature: Study Materials
+    {
+      path: '/kuppi-sessions/study-materials',
+      name: 'StudyMaterials',
+      component: () => import('../views/KuppiSessions/StudyMaterials.vue'),
+      meta: { title: 'Study Materials' },
+    },
+    {
+      path: '/kuppi-sessions/study-materials/upload',
+      name: 'UploadStudyMaterial',
+      component: () => import('../views/KuppiSessions/UploadStudyMaterial.vue'),
+      meta: { title: 'Upload Study Material' },
+    },
+    {
+      path: '/kuppi-sessions/study-materials/:category',
+      name: 'StudyMaterialsCategory',
+      component: () => import('../views/KuppiSessions/StudyMaterialsCategory.vue'),
+      meta: { title: 'Study Materials by Category' },
+    },
     {
       path: '/kuppi-sessions-duplicate',
       name: 'KuppiSessionsDuplicate',

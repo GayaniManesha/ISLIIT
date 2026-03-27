@@ -69,6 +69,17 @@ export type MongoKuppiSession = {
   createdAt?: string;
 };
 
+export type MongoStudyMaterial = {
+  _id?: string;
+  title: string;
+  description: string;
+  category: "Notes" | "Short Notes" | "Past Papers" | "Model Papers" | "Quizzes";
+  fileUrl: string;
+  fileName: string;
+  uploadedBy: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 export type Faculty = {
   _id?: string

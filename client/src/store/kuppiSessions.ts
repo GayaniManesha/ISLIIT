@@ -19,7 +19,7 @@ export function useKuppiSessionsStore() {
     error.value = null;
 
     try {
-      const response = await fetch(`${apiUrl}/api/kuppi-sessions`);
+      const response = await fetch(`${apiUrl}/kuppi-sessions`);
       if (!response.ok) {
         throw new Error(`Request failed: ${response.status}`);
       }
@@ -34,7 +34,7 @@ export function useKuppiSessionsStore() {
 
   const getKuppiSession = async (id: string): Promise<MongoKuppiSession | null> => {
     try {
-      const response = await fetch(`${apiUrl}/api/kuppi-sessions/${id}`);
+      const response = await fetch(`${apiUrl}/kuppi-sessions/${id}`);
       if (!response.ok) {
         throw new Error(`Request failed: ${response.status}`);
       }
@@ -51,7 +51,7 @@ export function useKuppiSessionsStore() {
     error.value = null;
 
     try {
-      const response = await fetch(`${apiUrl}/api/kuppi-sessions`, {
+      const response = await fetch(`${apiUrl}/kuppi-sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -82,7 +82,7 @@ export function useKuppiSessionsStore() {
     registrationError.value = null;
 
     try {
-      const response = await fetch(`${apiUrl}/api/kuppi-sessions/${sessionId}/register`, {
+      const response = await fetch(`${apiUrl}/kuppi-sessions/${sessionId}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -119,7 +119,7 @@ export function useKuppiSessionsStore() {
   ): Promise<boolean> => {
     try {
       const response = await fetch(
-        `${apiUrl}/api/kuppi-sessions/${sessionId}/check-registration?userId=${userId}`
+        `${apiUrl}/kuppi-sessions/${sessionId}/check-registration?userId=${userId}`
       );
 
       if (!response.ok) {
@@ -138,7 +138,7 @@ export function useKuppiSessionsStore() {
   const getSessionParticipantCount = async (sessionId: string): Promise<number> => {
     try {
       const response = await fetch(
-        `${apiUrl}/api/kuppi-sessions/${sessionId}/participants`
+        `${apiUrl}/kuppi-sessions/${sessionId}/participants`
       );
 
       if (!response.ok) {

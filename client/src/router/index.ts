@@ -152,6 +152,25 @@ const router = createRouter({
       component: () => import('../views/KuppiSessions/StudyMaterialsCategory.vue'),
       meta: { title: 'Study Materials by Category' },
     },
+    // Sub-Feature: Q&A Forum
+    {
+      path: '/kuppi-sessions/qa',
+      name: 'QAPage',
+      component: () => import('../views/KuppiSessions/QAPage.vue'),
+      meta: { title: 'Q&A Forum' },
+    },
+    {
+      path: '/kuppi-sessions/qa/create',
+      name: 'CreateQuestion',
+      component: () => import('../views/KuppiSessions/CreateQuestion.vue'),
+      meta: { title: 'Ask a Question' },
+    },
+    {
+      path: '/kuppi-sessions/qa/:questionId',
+      name: 'QuestionDetail',
+      component: () => import('../views/KuppiSessions/QuestionDetail.vue'),
+      meta: { title: 'Question Details' },
+    },
     {
       path: '/kuppi-sessions-duplicate',
       name: 'KuppiSessionsDuplicate',

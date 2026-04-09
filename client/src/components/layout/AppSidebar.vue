@@ -276,6 +276,7 @@ const menuGroups = [
           { name: 'Browse Kuppi Sessions', path: '/kuppi-sessions', pro: false },
           { name: 'Create a Kuppi Session', path: '/kuppi-sessions/create', pro: false },
           { name: 'Study Materials', path: '/kuppi-sessions/study-materials', pro: false },
+          { name: 'Q&A Forum', path: '/kuppi-sessions/qa', pro: false },
         ],
       },
       {

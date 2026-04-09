@@ -19,6 +19,7 @@ import pHelpersRouter from "./routes/p-helper.mjs";
 import academicRouter from "./routes/academic.mjs";
 import chatRouter from "./routes/chat.mjs";
 import emailRouter from "./routes/email.mjs";
+import qaRouter from "./routes/qa.mjs";
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use("/api/academic", academicRouter);
 
 app.use("/api/chat", chatRouter);
 app.use("/api/email", emailRouter);
+app.use("/api/qa", qaRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });

@@ -11,7 +11,7 @@ const apiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
 export function useStudyMaterialsStore() {
   const fetchCategories = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/study-materials/categories`);
+      const response = await fetch(`${apiUrl}/study-materials/categories`);
       if (!response.ok) throw new Error(`Request failed: ${response.status}`);
       categories.value = await response.json();
     } catch (err) {
@@ -25,8 +25,8 @@ export function useStudyMaterialsStore() {
 
     try {
       const url = category
-        ? `${apiUrl}/api/study-materials?category=${encodeURIComponent(category)}`
-        : `${apiUrl}/api/study-materials`;
+        ? `${apiUrl}/study-materials?category=${encodeURIComponent(category)}`
+        : `${apiUrl}/study-materials`;
       
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Request failed: ${response.status}`);
@@ -44,7 +44,7 @@ export function useStudyMaterialsStore() {
 
     try {
       const response = await fetch(
-        `${apiUrl}/api/study-materials/category/${encodeURIComponent(category)}`
+        `${apiUrl}/study-materials/category/${encodeURIComponent(category)}`
       );
       if (!response.ok) throw new Error(`Request failed: ${response.status}`);
       materials.value = await response.json();
@@ -61,7 +61,7 @@ export function useStudyMaterialsStore() {
     error.value = null;
 
     try {
-      const response = await fetch(`${apiUrl}/api/study-materials`, {
+      const response = await fetch(`${apiUrl}/study-materials`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -86,7 +86,7 @@ export function useStudyMaterialsStore() {
     error.value = null;
 
     try {
-      const response = await fetch(`${apiUrl}/api/study-materials/${id}`, {
+      const response = await fetch(`${apiUrl}/study-materials/${id}`, {
         method: "DELETE",
       });
 

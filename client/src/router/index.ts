@@ -23,7 +23,7 @@ const isAdminUser = () => {
         ? [user.role]
         : []
 
-  return roles.some(role => String(role).toLowerCase() === 'admin')
+  return roles.some((role: string) => String(role).toLowerCase() === 'admin')
 }
 
 /* --------------------------------- Router ---------------------------------- */
@@ -33,16 +33,9 @@ const router = createRouter({
     return savedPosition || { left: 0, top: 0 }
   },
   routes: [
-    {
-      path: '/',
-      name: 'Ecommerce',
-      component: () => import('../views/Ecommerce.vue'),
-      meta: { title: 'eCommerce Dashboard' },
-    },
-
     // Student
     {
-      path: '/student-dashboard',
+      path: '/',
       name: 'StudentDashboard',
       component: () => import('../views/Student/StudentDashboard.vue'),
       meta: { title: 'Student Dashboard' },
@@ -118,6 +111,73 @@ const router = createRouter({
       meta: { title: 'My Module Timetable' },
     },
 
+    // Kuppi Sessions (Main Topic)
+    // Sub-Feature: Browse Kuppi Sessions
+    {
+      path: '/kuppi-sessions',
+      name: 'BrowseKuppiSessions',
+      component: () => import('../views/KuppiSessions/KuppiSessionsList.vue'),
+      meta: { title: 'Browse Kuppi Sessions' },
+    },
+    // Sub-Feature: Create a Kuppi Session
+    {
+      path: '/kuppi-sessions/create',
+      name: 'CreateKuppiSession',
+      component: () => import('../views/KuppiSessions/CreateKuppiSession.vue'),
+      meta: { title: 'Create a Kuppi Session' },
+    },
+    // Session Details (Supporting route)
+    {
+      path: '/kuppi-sessions/:id',
+      name: 'KuppiSessionDetail',
+      component: () => import('../views/KuppiSessions/KuppiSessionDetail.vue'),
+      meta: { title: 'Kuppi Session Details' },
+    },
+    // Sub-Feature: Study Materials
+    {
+      path: '/kuppi-sessions/study-materials',
+      name: 'StudyMaterials',
+      component: () => import('../views/KuppiSessions/StudyMaterials.vue'),
+      meta: { title: 'Study Materials' },
+    },
+    {
+      path: '/kuppi-sessions/study-materials/upload',
+      name: 'UploadStudyMaterial',
+      component: () => import('../views/KuppiSessions/UploadStudyMaterial.vue'),
+      meta: { title: 'Upload Study Material' },
+    },
+    {
+      path: '/kuppi-sessions/study-materials/:category',
+      name: 'StudyMaterialsCategory',
+      component: () => import('../views/KuppiSessions/StudyMaterialsCategory.vue'),
+      meta: { title: 'Study Materials by Category' },
+    },
+    // Sub-Feature: Q&A Forum
+    {
+      path: '/kuppi-sessions/qa',
+      name: 'QAPage',
+      component: () => import('../views/KuppiSessions/QAPage.vue'),
+      meta: { title: 'Q&A Forum' },
+    },
+    {
+      path: '/kuppi-sessions/qa/create',
+      name: 'CreateQuestion',
+      component: () => import('../views/KuppiSessions/CreateQuestion.vue'),
+      meta: { title: 'Ask a Question' },
+    },
+    {
+      path: '/kuppi-sessions/qa/:questionId',
+      name: 'QuestionDetail',
+      component: () => import('../views/KuppiSessions/QuestionDetail.vue'),
+      meta: { title: 'Question Details' },
+    },
+    {
+      path: '/kuppi-sessions-duplicate',
+      name: 'KuppiSessionsDuplicate',
+      component: () => import('../views/Tables/KuppiSessionsDuplicate.vue'),
+      meta: { title: 'Kuppi Sessions' },
+    },
+
     // Profile & Forms
     {
       path: '/profile',
@@ -168,6 +228,12 @@ const router = createRouter({
       name: 'MyModules',
       component: () => import('../views/Tables/MyModules.vue'),
       meta: { title: 'My Modules' },
+    },
+    {
+      path: '/modules/:moduleId/events',
+      name: 'ModuleEvents',
+      component: () => import('../views/Modules/ModuleEvents.vue'),
+      meta: { title: 'Module Events' },
     },
     {
       path: '/comments-table',
@@ -248,6 +314,38 @@ const router = createRouter({
       meta: { title: 'Helper Profile' },
     },
 
+    // Academic Support
+    {
+      path: "/connect-u/academic-support",
+      name: "Academic Support",
+      component: () => import("../views/ConnectU/AcademicSupport.vue"),
+      meta: { title: "Academic Support" },
+    },
+    {
+      path: "/connect-u/academic-support/:id",
+      name: "Academic Module Details",
+      component: () => import("../views/ConnectU/AcademicModuleDetails.vue"),
+      meta: { title: "Module Helpers" },
+    },
+    {
+      path: "/connect-u/chat/my-inbox",
+      name: "Helper Inbox",
+      component: () => import("../views/ConnectU/HelperInbox.vue"),
+      meta: { title: "My Consultations" },
+    },
+    {
+      path: "/connect-u/chat/:id",
+      name: "Helper Chat",
+      component: () => import("../views/ConnectU/HelperChat.vue"),
+      meta: { title: "Consult Helper" },
+    },
+    {
+      path: "/admin/academic",
+      name: "Academic Admin",
+      component: () => import("../views/Admin/AcademicAdmin.vue"),
+      meta: { title: "Academic Admin", requiresAdmin: true },
+    },
+
     // UI
     {
       path: '/alerts',
@@ -323,7 +421,7 @@ const router = createRouter({
 
 /* ------------------------------ Navigation guard ----------------------------- */
 router.beforeEach((to, from, next) => {
-  document.title = `Vue.js ${to.meta.title || 'TailAdmin'} | TailAdmin`
+  document.title = `ISLIIT ${to.meta.title || ''} `
 
   const isPublicRoute = to.matched.some(record => record.meta.public === true)
   const hasUser = Boolean(readAuthUser())

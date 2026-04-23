@@ -126,6 +126,19 @@ const router = createRouter({
       component: () => import('../views/KuppiSessions/CreateKuppiSession.vue'),
       meta: { title: 'Create a Kuppi Session' },
     },
+    // Sub-Feature: Quizzes
+    {
+      path: '/kuppi-sessions/quizzes',
+      name: 'Quizzes',
+      component: () => import('../views/KuppiSessions/Quizzes.vue'),
+      meta: { title: 'Quizzes' },
+    },
+    {
+      path: '/kuppi-sessions/quizzes/:id',
+      name: 'QuizDetail',
+      component: () => import('../views/KuppiSessions/QuizDetail.vue'),
+      meta: { title: 'Quiz Details' },
+    },
     // Session Details (Supporting route)
     {
       path: '/kuppi-sessions/:id',

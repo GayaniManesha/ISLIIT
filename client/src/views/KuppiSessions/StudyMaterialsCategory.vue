@@ -143,6 +143,7 @@
           <div class="border-t border-gray-200 dark:border-gray-700 p-4 flex gap-2">
             <a
               :href="`${apiUrl}/api/study-materials/download/${material._id}`"
+              download
               class="flex-1 inline-flex items-center justify-center px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold transition-all shadow-md hover:shadow-lg transform hover:scale-105"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

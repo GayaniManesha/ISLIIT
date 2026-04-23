@@ -162,7 +162,13 @@ export async function downloadStudyMaterial(req, res, next) {
     // fileData is base64 encoded
     const buffer = Buffer.from(material.fileData, "base64");
     res.setHeader("Content-Type", "application/octet-stream");
-    res.setHeader("Content-Disposition", `attachment; filename="${material.fileName}"`);
+    
+    // Properly encode filename for Content-Disposition header
+    const fileName = material.fileName || "download";
+    const encodedFileName = encodeURIComponent(fileName);
+    res.setHeader("Content-Disposition", `attachment; filename="${encodedFileName}"; filename*=UTF-8''${encodedFileName}`);
+    res.setHeader("Content-Length", buffer.length);
+    
     res.send(buffer);
   } catch (error) {
     console.error("[Study Materials] Download error:", error);

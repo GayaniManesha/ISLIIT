@@ -71,7 +71,7 @@
               </div>
             </div>
 
-            <!-- Vote Button -->
+            <!-- Vote Button and Actions -->
             <div class="mt-6 flex gap-3">
               <button
                 @click="handleUpvoteQuestion"
@@ -81,6 +81,26 @@
               >
                 <span class="text-2xl">👍</span>
                 {{ currentQuestion.votes.totalVotes }}
+              </button>
+
+              <!-- Edit Button (only for question creator) -->
+              <button
+                v-if="isQuestionAsker"
+                @click="handleEditQuestion"
+                :disabled="qaStore.loading"
+                class="px-4 py-2 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50"
+              >
+                Edit
+              </button>
+
+              <!-- Delete Button (only for question creator) -->
+              <button
+                v-if="isQuestionAsker"
+                @click="handleDeleteQuestion"
+                :disabled="qaStore.loading"
+                class="px-4 py-2 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors disabled:opacity-50"
+              >
+                Delete
               </button>
             </div>
           </div>
@@ -253,16 +273,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, RouterLink } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useQAStore } from '@/store/qaStore';
-import { useAuthUser } from '@/composables/useAuthUser';
+import { useAuthUser, refreshAuthUser } from '@/composables/useAuthUser';
 import AdminLayout from '@/components/layout/AdminLayout.vue';
 import ChevronRightIcon from '@/icons/ChevronRightIcon.vue';
 import CheckIcon from '@/icons/CheckIcon.vue';
 import ChatIcon from '@/icons/ChatIcon.vue';
 
 const route = useRoute();
+const router = useRouter();
 const qaStore = useQAStore();
 const { authUser } = useAuthUser();
 
@@ -312,6 +333,25 @@ const handleUpvoteQuestion = async () => {
     await qaStore.upvoteQuestion(questionId);
   } catch (error) {
     console.error('Failed to upvote question:', error);
+  }
+};
+
+const handleEditQuestion = async () => {
+  // Future: Navigate to edit page or open edit modal
+  // For now, show a message
+  console.log('Edit question:', questionId);
+  // TODO: Implement question edit functionality
+};
+
+const handleDeleteQuestion = async () => {
+  if (confirm('Are you sure you want to delete this question? This will also delete all answers and comments.')) {
+    try {
+      await qaStore.deleteQuestion(questionId);
+      // Navigate back to QA page after deletion
+      router.push('/kuppi-sessions/qa');
+    } catch (error) {
+      console.error('Failed to delete question:', error);
+    }
   }
 };
 
@@ -388,6 +428,7 @@ const handleSubmitAnswer = async () => {
 };
 
 onMounted(async () => {
+  refreshAuthUser();
   await qaStore.fetchQuestionDetails(questionId);
 });
 </script>

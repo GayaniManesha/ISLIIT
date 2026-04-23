@@ -24,7 +24,7 @@ export const createQuestion = async (req, res) => {
     });
 
     // Populate user info
-    await question.populate('askedBy', 'username email avatar');
+    await question.populate('askedBy', '_id username email avatar');
 
     res.status(201).json({
       success: true,
@@ -87,7 +87,7 @@ export const getAllQuestions = async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate('askedBy', 'username email avatar')
+      .populate('askedBy', '_id username email avatar')
       .populate('bestAnswerId');
 
     const totalQuestions = await Question.countDocuments(filter);
@@ -133,7 +133,7 @@ export const getQuestionById = async (req, res) => {
       { $inc: { views: 1 } },
       { new: true }
     )
-      .populate('askedBy', 'username email avatar')
+      .populate('askedBy', '_id username email avatar')
       .populate('bestAnswerId');
 
     if (!question) {
@@ -199,7 +199,7 @@ export const updateQuestion = async (req, res) => {
     if (tags) question.tags = tags;
 
     await question.save();
-    await question.populate('askedBy', 'username email avatar');
+    await question.populate('askedBy', '_id username email avatar');
 
     res.status(200).json({
       success: true,
